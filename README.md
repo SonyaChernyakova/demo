@@ -17,10 +17,8 @@ iptables-save > /etc/sysconfig/iptables
 systemctl restart iptables  
 iptables –L –t nat - должны высветится в Chain POSTROUTING две настроенные подсети.  
 
-HQ-RTR - ip route 0.0.0.0/0 172.16.4.14  
-BR-RTR - ip route 0.0.0.0/0 172.16.5.14  
-o Интерфейс, к которому подключен HQ-RTR, подключен к сети 172.16.4.0/28  
-Настройка производится на EcoRouter:  
+
+HQ-RTR - ip route 0.0.0.0/0 172.16.4.14 
 en  
 conf t  
 int ISP  
@@ -30,8 +28,8 @@ service-instance toISP
 encapsulation untagged  
 connect ip interface ISP  
 wr  mem  
-o Интерфейс, к которому подключен BR-RTR, подключен к сети 172.16.5.0/28  
-Настройка производится на EcoRouter:  
+
+BR-RTR - ip route 0.0.0.0/0 172.16.5.14 
 en  
 conf t  
 int ISP  
@@ -41,3 +39,45 @@ service-instance toISP
 encapsulation untagged  
 connect ip interface ISP  
 wr  mem  
+
+
+Настройка производится на EcoRouter HQ-RTR: 
+ip nat pool nat1 192.168.0.1-192.168.0.254
+ip nat pool nat2 192.168.1.65-192.168.1.79 
+ip nat source dynamic inside-to-outside pool nat1 overload interface ISP 
+ip nat source dynamic inside-to-outside pool nat2 overload interface ISP 
+
+Настройка производится на EcoRouter BR-RTR: 
+ip nat pool nat3 192.168.1.2-192.168.1.31  
+ip nat source dynamic inside-to-outside pool nat3 overload interface ISP 
+
+● Все устройства в офисах должны иметь доступ к сети Интернет
+Настройка производится на EcoRouter HQ-RTR:
+en
+conf t
+int ISP
+ip nat outside
+ex
+int vl999
+ip nat inside
+ex
+int te1.100
+ip nat inside
+ex
+int te1.200
+ip nat inside
+Настройка производится на EcoRouter BR-RTR: 
+en
+conf t
+int ISP
+ip nat outside
+ex
+int SRV
+ip nat inside
+ex  
+
+
+Настройка производится на HQ-SRV:
+В nmtui прописывеем шлюз - 192.168.0.62/26  
+Настройка производится на BR-SRV:  
+В nmtui прописывет шлюз - 192.168.1.1/27
