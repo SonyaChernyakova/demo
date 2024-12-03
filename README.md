@@ -16,3 +16,28 @@ iptables –t nat –A POSTROUTING –s 172.16.5.0/28 –o ens3 –j MASQUERADE
 iptables-save > /etc/sysconfig/iptables  
 systemctl restart iptables  
 iptables –L –t nat - должны высветится в Chain POSTROUTING две настроенные подсети.  
+
+HQ-RTR - ip route 0.0.0.0/0 172.16.4.14  
+BR-RTR - ip route 0.0.0.0/0 172.16.5.14  
+o Интерфейс, к которому подключен HQ-RTR, подключен к сети 172.16.4.0/28  
+Настройка производится на EcoRouter:  
+en  
+conf t  
+int ISP  
+ip add 172.16.4.1/28  
+port te0  
+service-instance toISP  
+encapsulation untagged  
+connect ip interface ISP  
+wr  mem  
+o Интерфейс, к которому подключен BR-RTR, подключен к сети 172.16.5.0/28  
+Настройка производится на EcoRouter:  
+en  
+conf t  
+int ISP  
+ip add 172.16.5.1/28  
+port te0  
+service-instance toISP  
+encapsulation untagged  
+connect ip interface ISP  
+wr  mem  
