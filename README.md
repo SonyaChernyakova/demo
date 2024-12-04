@@ -39,6 +39,14 @@ port te0
 service-instance toISP  
 encapsulation untagged  
 connect ip interface ISP  
+
+int SRV
+ip add 192.168.1.1/27
+port te1
+service-instance toSRV
+encapsulation untagged
+int SRV
+connect port te1 service-instance toSRV
 wr  mem  
 
 
@@ -150,11 +158,20 @@ usermod -aG wheel sshuser
 nano /etc/sudoers  
 sshuser ALL=(ALL) NOPASSWD:ALL
 
+
 Перед настройкой выполните команду setenforce 0, далее переводим selinux в состояние  
- permissive в файле /etc/selinux/config
-setenforce 0
+permissive в файле /etc/selinux/config
 
  dnf install openssh - если не установлен
  systemctl enable --now sshd
  nano /etc/ssh/sshd_config
  Меняем порт на 2024
+  AllowUsers sshuser
+  MaxAuthTries 2
+  Banner /etc/ssh/banner 
+  в /etc/ssh/banner  
+  «Authorized access only»
+  systemctl restart sshd
+  ssh sshuser@192.168.1.2 -p 2024 
+  hq 192.168.0.2
+
