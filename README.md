@@ -1,6 +1,8 @@
 # demo
 ![image](https://github.com/user-attachments/assets/5ccb31a6-f690-4789-8037-62b7049578a1)
 ![image](https://github.com/user-attachments/assets/78b44241-aac2-4fd0-8613-39edf773cb04)
+
+
 HQ-RTR | BR-RTR:  
 в режиме глобальной конфигурации hostname {hq-rtr, br-rtr}    
 HQ-SRV | HQ-CLI | BR-SRV:  
@@ -20,14 +22,14 @@ iptables –L –t nat - должны высветится в Chain POSTROUTING 
 
 HQ-RTR - ip route 0.0.0.0/0 172.16.4.14 
 en  
-conf t  
-int ISP  
-ip add 172.16.4.1/28  
-port te0  
-service-instance toISP  
-encapsulation untagged  
-connect ip interface ISP  
-wr  mem  
+conf t      
+int ISP       
+ip add 172.16.4.1/28       
+port te0       
+service-instance toISP       
+encapsulation untagged       
+connect ip interface ISP       
+wr  mem       
 
 BR-RTR - ip route 0.0.0.0/0 172.16.5.14 
 en  
@@ -42,39 +44,41 @@ wr  mem
 
 
 Настройка производится на EcoRouter HQ-RTR: 
+
 ip nat pool nat1 192.168.0.1-192.168.0.254
+
 ip nat pool nat2 192.168.1.65-192.168.1.79 
+
 ip nat source dynamic inside-to-outside pool nat1 overload interface ISP 
+
 ip nat source dynamic inside-to-outside pool nat2 overload interface ISP 
 
-Настройка производится на EcoRouter BR-RTR: 
-ip nat pool nat3 192.168.1.2-192.168.1.31  
-ip nat source dynamic inside-to-outside pool nat3 overload interface ISP 
-
-● Все устройства в офисах должны иметь доступ к сети Интернет
-Настройка производится на EcoRouter HQ-RTR:
 en
 conf t
 int ISP
 ip nat outside
-ex
 int vl999
 ip nat inside
-ex
 int te1.100
 ip nat inside
-ex
 int te1.200
 ip nat inside
+
+
 Настройка производится на EcoRouter BR-RTR: 
+
+ip nat pool nat3 192.168.1.2-192.168.1.31  
+
+ip nat source dynamic inside-to-outside pool nat3 overload interface ISP 
+
 en
 conf t
 int ISP
-ip nat outside
-ex
+ip nat outsidе
 int SRV
 ip nat inside
-ex  
+
+
 
 
 Настройка производится на HQ-SRV:
