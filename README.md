@@ -113,7 +113,8 @@ connect ip interface te1.200
 
 HQ SW
 
-nmtui hq 
+nmtui hq 192.168.0.82/29
+шлюз 192.168.0.81
 
 ovs-vsctl add-br ovs0  
 ovs-vsctl add-port ovs0 ens3  
