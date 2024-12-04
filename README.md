@@ -226,7 +226,7 @@ Conf t
 Router ospf 1
 Ospf router-id 172.16.0.2
 Network 172.16.0.0 0.0.0.3 area 0
-Network 192.168.2.0 0.0.0.31 area 0
+Network 192.168.1.0 0.0.0.31 area 0
 Passive-interface default
 no passive-interface tunnel.1
 
