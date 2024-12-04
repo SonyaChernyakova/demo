@@ -115,6 +115,8 @@ HQ SW
 
 nmtui hq 192.168.0.82/29
 шлюз 192.168.0.81
+-y
+systemctl enable --now openvswitch
 
 ovs-vsctl add-br ovs0  
 ovs-vsctl add-port ovs0 ens3  
@@ -148,4 +150,11 @@ usermod -aG wheel sshuser
 nano /etc/sudoers  
 sshuser ALL=(ALL) NOPASSWD:ALL
 
+Перед настройкой выполните команду setenforce 0, далее переводим selinux в состояние  
+ permissive в файле /etc/selinux/config
+setenforce 0
 
+ dnf install openssh - если не установлен
+ systemctl enable --now sshd
+ nano /etc/ssh/sshd_config
+ Меняем порт на 2024
