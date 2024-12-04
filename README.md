@@ -82,23 +82,6 @@ username net_admin
 password P@$$word  
 role admin  
 
-
-
-Настройка производится на HQ-SRV:
-
-В nmtui прописывеем шлюз - 192.168.0.62/26  
-
-Настройка производится на BR-SRV:
-
-В nmtui прописывет шлюз - 192.168.1.1/27
-
-useradd -m -u 1010 sshuser  
-echo "sshuser:P@ssw0rd" | sudo chpasswd  
-usermod -aG wheel sshuser  
-nano /etc/sudoers  
-sshuser ALL=(ALL) NOPASSWD:ALL
-
-
 HQ-RTR
 
 int vl999  
@@ -147,4 +130,21 @@ ovs-vsctl add-port ovs0 ens5
 ovs-vsctl set port ens5 tag=200 trunks=200  
 ovs-vsctl add-port ovs0 ovs0-vlan200 tag=200 -- set Interface ovs0-vlan200 type=internal  
 ifconfig ovs0-vlan200 up 
+
+
+
+Настройка производится на HQ-SRV:
+
+В nmtui прописывеем шлюз - 192.168.0.62/26  
+
+Настройка производится на BR-SRV:
+
+В nmtui прописывет шлюз - 192.168.1.1/27
+
+useradd -m -u 1010 sshuser  
+echo "sshuser:P@ssw0rd" | sudo chpasswd  
+usermod -aG wheel sshuser  
+nano /etc/sudoers  
+sshuser ALL=(ALL) NOPASSWD:ALL
+
 
