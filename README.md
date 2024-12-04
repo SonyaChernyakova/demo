@@ -101,6 +101,7 @@ sshuser ALL=(ALL) NOPASSWD:ALL
 
 HQ SW
 
+nmtui hq 
 ovs-vsctl add-br ovs0  
 ovs-vsctl add-port ovs0 ens3  
 ovs-vsctl set port ens3 vlan_mode=native-untagged tag=999 trunks=999,100,200  
