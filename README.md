@@ -166,10 +166,12 @@ sshuser ALL=(ALL) NOPASSWD:ALL
 Перед настройкой выполните команду setenforce 0, далее переводим selinux в состояние  
 permissive в файле /etc/selinux/config
 ```
-dnf install openssh - если не установлен
+dnf install openssh -y
 systemctl enable --now sshd
 nano /etc/ssh/sshd_config
 Меняем порт на 2024
+
+отступ 3 строки
 
 AllowUsers sshuser
 MaxAuthTries 2
@@ -203,6 +205,12 @@ network 192.168.1.0 0.0.0.15 area 0
 passive-interface default
 no passive-interface tunnel.1
 
+ router ospf 1
+ area 0 authentication 
+ ex
+ interface tunnel.1  
+ ip ospf authentication-key ecorouter  
+ wr mem  
 
 BR-RTR:
 
@@ -221,4 +229,13 @@ Network 172.16.0.0 0.0.0.3 area 0
 Network 192.168.2.0 0.0.0.31 area 0
 Passive-interface default
 no passive-interface tunnel.1
+
+ router ospf 1  
+ area 0 authentication 
+ ex  
+ interface tunnel.1  
+ ip ospf authentication-key ecorouter  
+ wr mem  
+
 ```
+
