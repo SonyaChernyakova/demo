@@ -46,24 +46,22 @@ encapsulation untagged
 connect ip interface ISP  
 wr mem
 
+```
 Int SRV     
-ip add 192.168.1.1/27   |
-port te1  |
-service-instance toSRV  |
-encapsulation untagged   |
-int SRV   |
-connect port te1 service-instance toSRV   |
+ip add 192.168.1.1/27   
+port te1  
+service-instance toSRV  
+encapsulation untagged   
+int SRV   
+connect port te1 service-instance toSRV   
 wr  mem 
-
+```
 
 Настройка производится на EcoRouter HQ-RTR: 
-
+```
 ip nat pool nat1 192.168.0.1-192.168.0.254
-
 ip nat pool nat2 192.168.1.65-192.168.1.79 
-
 ip nat source dynamic inside-to-outside pool nat1 overload interface ISP 
-
 ip nat source dynamic inside-to-outside pool nat2 overload interface ISP 
 
 en
@@ -76,12 +74,11 @@ int te1.100
 ip nat inside
 int te1.200
 ip nat inside
-
+```
 
 Настройка производится на EcoRouter BR-RTR: 
-
+```
 ip nat pool nat3 192.168.1.2-192.168.1.31  
-
 ip nat source dynamic inside-to-outside pool nat3 overload interface ISP 
 
 en
@@ -90,7 +87,7 @@ int ISP
 ip nat outsidе
 int SRV
 ip nat inside
-
+```
 
 
 
@@ -168,17 +165,60 @@ sshuser ALL=(ALL) NOPASSWD:ALL
 
 Перед настройкой выполните команду setenforce 0, далее переводим selinux в состояние  
 permissive в файле /etc/selinux/config
+```
+dnf install openssh - если не установлен
+systemctl enable --now sshd
+nano /etc/ssh/sshd_config
+Меняем порт на 2024
 
- dnf install openssh - если не установлен
- systemctl enable --now sshd
- nano /etc/ssh/sshd_config
- Меняем порт на 2024
-  AllowUsers sshuser
-  MaxAuthTries 2
-  Banner /etc/ssh/banner 
-  в /etc/ssh/banner  
-  «Authorized access only»
-  systemctl restart sshd
-  ssh sshuser@192.168.1.2 -p 2024 
-  hq 192.168.0.2
+AllowUsers sshuser
+MaxAuthTries 2
+Banner /etc/ssh/banner
 
+в /etc/ssh/banner  «Authorized access only»
+systemctl restart sshd
+
+ssh sshuser@192.168.1.2 -p 2024 
+hq 192.168.0.2
+```
+ТУНЕЛЬ
+
+```
+HQ-RTR:
+
+Interface tunnel.1  
+Ip add 172.16.0.1/30  
+Ip mtu 1476
+ip ospf network broadcast
+ip ospf mtu-ignore
+Ip tunnel 172.16.4.1 172.16.5.1 mode gre
+end
+
+Conf t
+Router ospf 1
+Ospf router-id  172.16.0.1
+network 172.16.0.0 0.0.0.3 area 0
+network 192.168.0.0 0.0.0.63 area 0
+network 192.168.1.0 0.0.0.15 area 0
+passive-interface default
+no passive-interface tunnel.1
+
+
+BR-RTR:
+
+Interface tunnel.1
+Ip add 172.16.0.2/30
+Ip mtu 1476
+ip ospf mtu-ignore
+ip ospf network broadcast
+Ip tunnel 172.16.5.1 172.16.4.1 mode gre
+end
+
+Conf t
+Router ospf 1
+Ospf router-id 172.16.0.2
+Network 172.16.0.0 0.0.0.3 area 0
+Network 192.168.2.0 0.0.0.31 area 0
+Passive-interface default
+no passive-interface tunnel.1
+```
