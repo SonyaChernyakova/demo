@@ -46,16 +46,14 @@ encapsulation untagged
 connect ip interface ISP  
 wr mem
 
-int SRV
-ip add 192.168.1.1/27
-port te1
-service-instance toSRV
-encapsulation untagged
-int SRV
-connect port te1 service-instance toSRV
-wr  mem  
-
-
+Int SRV     
+ip add 192.168.1.1/27   |
+port te1  |
+service-instance toSRV  |
+encapsulation untagged   |
+int SRV   |
+connect port te1 service-instance toSRV   |
+wr  mem 
 
 
 Настройка производится на EcoRouter HQ-RTR: 
@@ -157,13 +155,9 @@ ifconfig ovs0-vlan200 up
 
 
 
-Настройка производится на HQ-SRV:
+Настройка производится на HQ-SRV: 192.168.0.2/26 - 192.168.0.62  
 
-В nmtui прописывеем шлюз - 192.168.0.62/26  
-
-Настройка производится на BR-SRV:
-
-В nmtui прописывет шлюз - 192.168.1.1/27
+Настройка производится на BR-SRV: 192.168.1.2/27 - 192.168.1.1
 
 useradd -m -u 1010 sshuser  
 echo "sshuser:P@ssw0rd" | sudo chpasswd  
