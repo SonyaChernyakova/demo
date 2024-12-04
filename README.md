@@ -238,4 +238,19 @@ no passive-interface tunnel.1
  wr mem  
 
 ```
-
+HQ-RTR:
+```
+ip pool dhcpHQ 192.168.1.65-192.168.1.79
+en
+conf t
+dhcp-server 1
+pool dhcpHQ 1
+domain-name au-team.irpo
+mask 255.255.255.240  
+gateway 192.168.1.78  
+dns 192.168.0.1  
+end  
+wr mem  
+interface te1.200
+dhcp-server 1
+```
