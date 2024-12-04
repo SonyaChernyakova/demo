@@ -78,10 +78,69 @@ ip nat outsidе
 int SRV
 ip nat inside
 
+Настройка производится на EcoRouter:  
+username net_admin  
+password P@$$word  
+role admin  
 
 
 
 Настройка производится на HQ-SRV:
+
 В nmtui прописывеем шлюз - 192.168.0.62/26  
-Настройка производится на BR-SRV:  
+
+Настройка производится на BR-SRV:
+
 В nmtui прописывет шлюз - 192.168.1.1/27
+
+useradd -m -u 1010 sshuser  
+echo "sshuser:P@ssw0rd" | sudo chpasswd  
+usermod -aG wheel sshuser  
+nano /etc/sudoers  
+sshuser ALL=(ALL) NOPASSWD:ALL
+
+HQ SW
+
+ovs-vsctl add-br ovs0  
+ovs-vsctl add-port ovs0 ens3  
+ovs-vsctl set port ens3 vlan_mode=native-untagged tag=999 trunks=999,100,200  
+ovs-vsctl add-port ovs0 ovs0-vlan999 tag=999 -- set Interface ovs0-vlan999 type=internal  
+ifconfig ovs0-vlan999 inet 192.168.0.82/29 up  
+
+ovs-vsctl add-port ovs0 ens4  
+ovs-vsctl set port ens4 tag=100 trunks=100  
+ovs-vsctl add-port ovs0 ovs0-vlan100 tag=100 -- set Interface ovs0-vlan100 type=internal  
+ifconfig ovs0-vlan100 up  
+
+ovs-vsctl add-port ovs0 ens5  
+ovs-vsctl set port ens5 tag=200 trunks=200  
+ovs-vsctl add-port ovs0 ovs0-vlan200 tag=200 -- set Interface ovs0-vlan200 type=internal  
+ifconfig ovs0-vlan200 up 
+
+HQ-RTR
+
+int vl999  
+ip add 192.168.0.81/29  
+description toSW  
+port te1  
+Service-instance toSW  
+Encapsulation untagged  
+ex  
+Int vl999  
+connect port te1 service-instance toSW  
+
+int te1.100  
+ip add 192.168.0.62/26  
+port te1  
+service-instance te1.100  
+encapsulation dot1q 100  
+rewrite pop 1  
+connect ip interface te1.100  
+
+int te1.200  
+ip add 192.168.1.78/28  
+port te1  
+service-instance te1.200  
+encapsulation dot1q 200  
+rewrite pop 1  
+connect ip interface te1.200  
