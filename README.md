@@ -19,6 +19,11 @@ HQ-RTR | BR-RTR:
 HQ-SRV | HQ-CLI | BR-SRV:  
 hostnamectl set-hostname {hq-srv, hq-cli, br-srv}.au-team.irpo; exec bash 
 
+
+
+
+РОУТЕРЫ 
+
 HQ-RTR - ip route 0.0.0.0/0 172.16.4.14 
 en  
 conf t      
@@ -39,6 +44,7 @@ port te0
 service-instance toISP  
 encapsulation untagged  
 connect ip interface ISP  
+wr mem
 
 int SRV
 ip add 192.168.1.1/27
@@ -48,6 +54,8 @@ encapsulation untagged
 int SRV
 connect port te1 service-instance toSRV
 wr  mem  
+
+
 
 
 Настройка производится на EcoRouter HQ-RTR: 
@@ -85,11 +93,16 @@ ip nat outsidе
 int SRV
 ip nat inside
 
+
+
+
 Настройка производится на EcoRouter:  
 username net_admin  
 password P@$$word  
 role admin  
 
+
+ДЛЯ SW
 HQ-RTR
 
 int vl999  
