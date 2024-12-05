@@ -249,8 +249,42 @@ domain-name au-team.irpo
 mask 255.255.255.240  
 gateway 192.168.1.78  
 dns 192.168.0.1  
-end  
+end
+
+
 wr mem  
 interface te1.200
 dhcp-server 1
 ```
+Настройка клиента 
+Адрес DNS-сервера для машины HQ-CLI – адрес сервера HQ-SRV
+
+
+hq-srv:
+timedatectl set-timezone  
+
+```
+dnf install bind -y
+systemctl enable --now named
+chattr -f +i /etc/resolv.conf
+mv /etc/named/named.conf /etc/named/named.conf.backup
+nano /etc/named.conf
+```
+![image](https://github.com/user-attachments/assets/62e3b167-9ba2-47e2-87d1-ae693eb4d068)
+![image](https://github.com/user-attachments/assets/18ec9b4f-b969-4abf-911e-f41f9b2a77f2)
+```
+mkdir /var/named/master
+chown -R named:named /var/named/master
+chmod 750 /var/named/*
+chmod 750 /var/named/master/*
+nano /var/named/master/au-team
+```
+![image](https://github.com/user-attachments/assets/cf713ca3-74d3-4db0-887f-d4dffb453301)
+
+```
+nano /etc/nsswitch.conf
+/etc/nsswitch.conf – это файл конфигурации Linux, который определяет, как система должна переключаться между различными поставщиками услуг имен.
+Меняем hosts: files myhostname resolve [!UNAVAIL=return] dns на:
+```
+![image](https://github.com/user-attachments/assets/208e5faf-a696-4e48-8fc0-f902a4840e2b)
+![image](https://github.com/user-attachments/assets/d7640863-3390-4efe-a0da-ece676ae42e3)
