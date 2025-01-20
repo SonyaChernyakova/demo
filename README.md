@@ -35,6 +35,7 @@ encapsulation untagged
 connect ip interface ISP       
 wr  mem       
 
+
 BR-RTR - ip route 0.0.0.0/0 172.16.5.14 
 en  
 conf t  
