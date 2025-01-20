@@ -100,15 +100,14 @@ role admin
 ДЛЯ SW
 HQ-RTR
 
-int vl999  
-ip add 192.168.0.81/29  
-description toSW  
 port te1  
 Service-instance toSW  
-Encapsulation untagged  
-ex  
-Int vl999  
+Encapsulation untagged
+int vl999  
+ip add 192.168.0.81/29  
+description toSW   
 connect port te1 service-instance toSW  
+end wr mem
 
 int te1.100  
 ip add 192.168.0.62/26  
