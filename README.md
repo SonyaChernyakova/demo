@@ -261,7 +261,9 @@ dhcp-server 1
 
 
 hq-srv:
-timedatectl set-timezone  
+timedatectl set-timezone Europe/Moscow  
+
+hq-rtr: ntp timezone UTC+3 
 
 ```
 dnf install bind -y
@@ -281,8 +283,6 @@ nano /var/named/master/au-team
 ```
 ![image](https://github.com/user-attachments/assets/cf713ca3-74d3-4db0-887f-d4dffb453301)
 
-systemctl enable --now named
-named-checkconf -z
 ```
 nano /etc/nsswitch.conf
 /etc/nsswitch.conf – это файл конфигурации Linux, который определяет, как система должна переключаться между различными поставщиками услуг имен.
@@ -290,3 +290,7 @@ nano /etc/nsswitch.conf
 ```
 ![image](https://github.com/user-attachments/assets/208e5faf-a696-4e48-8fc0-f902a4840e2b)
 ![image](https://github.com/user-attachments/assets/d7640863-3390-4efe-a0da-ece676ae42e3)
+
+
+
+
