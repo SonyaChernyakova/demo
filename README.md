@@ -266,8 +266,8 @@ timedatectl set-timezone
 ```
 dnf install bind -y
 systemctl enable --now named
-chattr -f +i /etc/resolv.conf
-mv /etc/named/named.conf /etc/named/named.conf.backup
+((chattr -f +i /etc/resolv.conf
+mv /etc/named/named.conf /etc/named/named.conf.backup)) хз что это и работает ли
 nano /etc/named.conf
 ```
 ![image](https://github.com/user-attachments/assets/62e3b167-9ba2-47e2-87d1-ae693eb4d068)
@@ -281,6 +281,8 @@ nano /var/named/master/au-team
 ```
 ![image](https://github.com/user-attachments/assets/cf713ca3-74d3-4db0-887f-d4dffb453301)
 
+systemctl enable --now named
+named-checkconf -z
 ```
 nano /etc/nsswitch.conf
 /etc/nsswitch.conf – это файл конфигурации Linux, который определяет, как система должна переключаться между различными поставщиками услуг имен.
