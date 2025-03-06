@@ -263,7 +263,8 @@ dhcp-server 1
 hq-srv:
 timedatectl set-timezone Europe/Moscow  
 
-hq-rtr: ntp timezone UTC+3 
+hq-rtr: ntp server 172.16.4.1 
+ntp timezone UTC+3 
 
 ```
 dnf install bind -y
@@ -303,5 +304,34 @@ nano /etc/nsswitch.conf
 
 Модуль №2:
 
+яндекс 
+
+
+
+
+
+
+на BR-SRV
+
 setenforce 0
 (nano /etc/selinux/config  # замените режим с enforcing на permissive)
+```
+выставляем 192.168.0.2 в качестве нащего днс сервера на линке в nmtui и домен поиска au-team.irpo  
+```
+```
+ dnf install samba* krb5* -y  
+ Проверьте доступные серверы имен, просмотрев файл resolv.conf:  
+ cat /etc/resolv.conf  
+ В выводе должно отобразиться наш dns сервер и домен для поиска.
+```
+```
+Создание резервных копий файлов  
+ Переименуйте файл /etc/smb.conf, он будет создан позднее в процессе выполнения команды samba-tool.  
+ cp /etc/samba/smb.conf /etc/samba/smb.conf.back  
+ Создайте резервную копию используемого по умолчанию конфигурационного файла kerberos:  
+ cp /etc/krb5.conf /etc/krb5.conf.back
+```
+```
+ Файла /etc/samba/smb.conf быть не должно, он сам создаст.  
+ rm -rf /etc/samba/smb.conf  
+ samba-tool domain provision --use-rfc2307 --interactive
