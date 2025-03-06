@@ -259,13 +259,13 @@ dhcp-server 1
 Настройка клиента 
 Адрес DNS-сервера для машины HQ-CLI – адрес сервера HQ-SRV
 
-
+```
 hq-srv:
 timedatectl set-timezone Europe/Moscow  
 
 hq-rtr: ntp server 172.16.4.1 
 ntp timezone UTC+3 
-
+```
 ```
 dnf install bind -y
 systemctl enable --now named
