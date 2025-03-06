@@ -306,11 +306,56 @@ nano /etc/nsswitch.conf
 
 яндекс 
 
+Сконфигурируйте файловое хранилище
+```
+dnf isntall mdadm nfs-utils -y
+mdadm --create --verbose /dev/md0 --level=5 --raid-devices=3 /dev/sdb /dev/sdc /dev/sdd
+```
+![image](https://github.com/user-attachments/assets/f273bc7f-16f3-4969-ab0f-d44a40a33e85)
+![image](https://github.com/user-attachments/assets/39dff8bf-2ccf-4fb5-9d7f-3780b1871816)
+```
+mdadm --detail --scan >> /etc/mdadm.conf
+Добавляем в /etc/fstab:    
+nano /etc/fstab  
+/dev/md0 /raid5 ext4 defaults 0 0  (просто в самом низу файла)
+```
+![image](https://github.com/user-attachments/assets/0998813d-0576-4d5e-8b3e-23de7bf9c7bd)
+
+mkfs.ext4 /dev/md0  
+![image](https://github.com/user-attachments/assets/441099d0-a03d-420c-80bc-a4dc29215a99)
+```
+mkdir -p /raid5   
+mount -a   
+```
+![image](https://github.com/user-attachments/assets/5ee5e328-0a29-4bab-b454-8ddb8f006c18)
+```
+mkdir -p /raid5/nfs  
+chmod 777 /raid5/nfs
+
+Добавляем в /etc/exports:  
+nano /etc/exports  
+/raid5/nfs 192.168.1.0/28(rw,sync,insecure,nohide,all_squash,no_subtree_check)
+/raid5/nfs 192.168.0.0/26(rw,sync,insecure,nohide,all_squash,no_subtree_check)
+(пустой файл это ок, там только то что надо написать вручную)
+
+exportfs -rav  
+systemctl restart nfs-server
+
+  Добавляем в /etc/fstab:    
+  nano /etc/fstab  
+  hq-srv:/raid5/nfs /mnt/nfs nfs defaults 0 0
+```
+![image](https://github.com/user-attachments/assets/06dfd6b7-5556-43f1-9410-b4e4e40cd073)
+```
+mkdir -p /mnt/nfs  
+mount -a 
+```
 
 
 
 
 
+SAMBA
 на BR-SRV
 
 setenforce 0
