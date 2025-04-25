@@ -201,7 +201,7 @@ Router ospf 1
 Ospf router-id  172.16.0.1
 network 172.16.0.0 0.0.0.3 area 0
 network 192.168.0.0 0.0.0.63 area 0
-network 192.168.1.0 0.0.0.15 area 0
+network 192.168.1.78 0.0.0.15 area 0
 passive-interface default
 no passive-interface tunnel.1
 
@@ -357,7 +357,7 @@ mount -a
 
 SAMBA
 на BR-SRV
-
+пароль в самбе P@ssw0rd
 setenforce 0
 (nano /etc/selinux/config  # замените режим с enforcing на permissive)
 ```
