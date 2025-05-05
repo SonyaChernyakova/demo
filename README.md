@@ -54,7 +54,7 @@ port te1
 service-instance toSRV  
 encapsulation untagged   
 int SRV   
-connect port te1 service-instance toSRV   
+connect ip interface SRV   
 wr  mem 
 ```
 
