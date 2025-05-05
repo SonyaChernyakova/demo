@@ -101,6 +101,7 @@ role admin
 ДЛЯ SW
 HQ-RTR
 
+```
 port te1  
 Service-instance toSW  
 Encapsulation untagged
@@ -125,7 +126,7 @@ service-instance te1.200
 encapsulation dot1q 200  
 rewrite pop 1  
 connect ip interface te1.200  
-
+```
 
 HQ SW
 
