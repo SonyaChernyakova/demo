@@ -302,6 +302,43 @@ nano /etc/nsswitch.conf
 ```
 На HQ-CLI и HQ-RTR установить DNS-сервер: 192.168.0.2 (при необходимости удалить 8.8.8.8).
 ```
+/var/named/master/au-team   
+```
+$TTL    604800  ;
+@       IN      SOA     hq-srv.au-team.irpo     root.au-team.irpo       (
+                1       ;       Serial
+                3600    ;       Refresh
+                900     ;       Retry
+                1w      ;       Expire
+                3600    ;       Minimum TTL
+                )
+        IN      NS      127.0.0.1.
+hq-srv  IN      A       192.168.0.2
+hq-rtr  IN      A       192.168.0.62
+br-rtr  IN      A       172.16.5.1
+hq-cli  IN      A       192.168.0.65
+br-srv  IN      A       192.168.1.2
+
+moodle  IN      CNAME   hq-rtr.au-team.irpo.
+wiki    IN      CNAME   hq-rtr.au-team.irpo.
+```
+/var/named/master/168.192.zone 
+```
+$TTL    3600    ;
+@       IN      SOA     hq-srv.au-team.irpo     root.au-team.irpo       (
+                1       ;       Serial
+                3600    ;       Refresh
+                900     ;       Retry
+                1w      ;       Expire
+                360     ;       Minimum TTL
+                )
+@       IN      NS      localhost.
+2.0     IN      PTR     hq-srv
+62.0    IN      PTR     hq-rtr
+65.1    IN      PTR     hq-cil
+```
+
+
 
 Модуль №2:
 
