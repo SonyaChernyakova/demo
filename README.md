@@ -408,3 +408,23 @@ host_key_checking = false
 
 ansible -i /etc/ansible/inventory.ini all -m ping 
 ```
+
+
+```
+dnf install docker-ce docker-ce-cli -y
+systemctl enable docker --now
+dnf install docker-compose -y
+https://www.mediawiki.org/wiki/Docker/Docker_Hub
+nano /home/sshuser/wiki.yml меняем port ?, container_name mariadb, image mariadb, пароль
+volumes:
+	- dbvolume:/var/lib/mariadb
+
+sudo docker volume create dbvolume
+docker-compose -f wiki.yml up -d
+http://192.168.2.2:8080 
+scp -P 2024 LocalSettings.php  sshuser@192.168.2.2:~/
+в файле разкомент 
+docker-compose -f wiki.yml stop 2
+docker-compose -f wiki.yml up -d
+http://192.168.200.2:8080 
+```
