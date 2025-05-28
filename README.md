@@ -338,11 +338,72 @@ $TTL    3600    ;
 62.0    IN      PTR     hq-rtr
 65.1    IN      PTR     hq-cil
 ```
+```
+chown -R root:named /var/named/master/ 
+chown -R named:named /var/named 
+chown -R root:named /etc/named.conf
+chmod 750 /var/named/
+chmod 750 /var/named/master/
+systemctl restart named
+Проверить зоны можно командой named-checkconf -z
 
+resolvectl dns ens3 192.168.0.61
 
+timedatectl set-timezone Europe/Moscow  
+```
 
+```
+ansible на сервере BR-SRV
 
+ На HQ-RTR и BR-RTR:  
+ en  
+ conf  
+ security-profile 1  
+ rule 1 permit tcp any eq 22 any  
+ end  
+ wr mem  
+ configure
+ ip vrf vrf0  
+ transport input ssh    
+ security 1 vrf vrf0  
+ end  
+ wr mem  
+ conf
+ no security default
 
+  dnf install ansible -y  
+ 
+  nano /etc/ansible/inventory.ini  
+  [clients]
+  hq-cli ansible_host=192.168.1.65
+    
+  [servers]
+  hq-srv ansible_host=192.168.0.2
+     
+  [routers]
+  hq-rtr ansible_host=192.168.0.62
+  br-rtr ansible_host=172.16.5.1
+     
+  [clients:vars]
+  ansible_port=2024
+  ansible_user=sshuser
+     
+  [servers:vars]
+  ansible_port=2024
+  ansible_user=sshuser
 
+  [routers:vars]
+  ansible_user=net_admin
+  ansible_password=P@$$word
+```
+su sshuser
+ssh-keygen
+dnf install sshpass -y
+ssh-copy-id -p 3015 -i /home/sshuser/.ssh/id_rsa.pub 192.168.0.61
 
+/etc/ansible/ansible.cfg
+[defaults]
+host_key_checking = false
 
+ansible -i /etc/ansible/inventory.ini all -m ping 
+```
