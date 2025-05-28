@@ -396,6 +396,7 @@ ansible на сервере BR-SRV
   ansible_user=net_admin
   ansible_password=P@$$word
 ```
+```
 su sshuser
 ssh-keygen
 dnf install sshpass -y
