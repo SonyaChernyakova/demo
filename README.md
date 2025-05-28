@@ -298,30 +298,9 @@ nano /etc/named.conf
 ![image](https://github.com/user-attachments/assets/62e3b167-9ba2-47e2-87d1-ae693eb4d068)
 ![image](https://github.com/user-attachments/assets/18ec9b4f-b969-4abf-911e-f41f9b2a77f2)
 ```
-mkdir /var/named/master
-cp /var/named/named.localhost /var/named/master/au-team.irpo
-cp /var/named/named.loopback /var/named/master/0.168.192.zone
-chown -R root:named /var/named/master
-chmod -R 750 /var/named/master
-
-((chown -R named:named /var/named/master
-chmod 750 /var/named/*
-chmod 750 /var/named/master/*
-nano /var/named/master/au-team ))
 
 ```
-![image](https://github.com/user-attachments/assets/cf713ca3-74d3-4db0-887f-d4dffb453301)
-
-```
-nano /etc/nsswitch.conf
-/etc/nsswitch.conf – это файл конфигурации Linux, который определяет, как система должна переключаться между различными поставщиками услуг имен.
-Меняем hosts: files myhostname resolve [!UNAVAIL=return] dns на:
-```
-![image](https://github.com/user-attachments/assets/208e5faf-a696-4e48-8fc0-f902a4840e2b)
-![image](https://github.com/user-attachments/assets/d7640863-3390-4efe-a0da-ece676ae42e3)
-
-```
-На HQ-CLI и HQ-RTR установить DNS-сервер: 192.168.0.2 (при необходимости удалить 8.8.8.8).
+На HQ-CLI и HQ-RTR установить DNS-сервер: 192.168.0.61
 ```
 /var/named/master/au-team   
 ```
@@ -334,7 +313,7 @@ $TTL    604800  ;
                 3600    ;       Minimum TTL
                 )
         IN      NS      127.0.0.1.
-hq-srv  IN      A       192.168.0.2
+hq-srv  IN      A       192.168.0.61
 hq-rtr  IN      A       192.168.0.62
 br-rtr  IN      A       172.16.5.1
 hq-cli  IN      A       192.168.0.65
@@ -361,81 +340,8 @@ $TTL    3600    ;
 
 
 
-Модуль №2:
-
-яндекс 
-
-Сконфигурируйте файловое хранилище
-```
-dnf isntall mdadm nfs-utils -y
-mdadm --create --verbose /dev/md0 --level=5 --raid-devices=3 /dev/sdb /dev/sdc /dev/sdd
-```
-![image](https://github.com/user-attachments/assets/f273bc7f-16f3-4969-ab0f-d44a40a33e85)
-![image](https://github.com/user-attachments/assets/39dff8bf-2ccf-4fb5-9d7f-3780b1871816)
-```
-mdadm --detail --scan >> /etc/mdadm.conf
-Добавляем в /etc/fstab:    
-nano /etc/fstab  
-/dev/md0 /raid5 ext4 defaults 0 0  (просто в самом низу файла)
-```
-![image](https://github.com/user-attachments/assets/0998813d-0576-4d5e-8b3e-23de7bf9c7bd)
-
-mkfs.ext4 /dev/md0  
-![image](https://github.com/user-attachments/assets/441099d0-a03d-420c-80bc-a4dc29215a99)
-```
-mkdir -p /raid5   
-mount -a   
-```
-![image](https://github.com/user-attachments/assets/5ee5e328-0a29-4bab-b454-8ddb8f006c18)
-```
-mkdir -p /raid5/nfs  
-chmod 777 /raid5/nfs
-
-Добавляем в /etc/exports:  
-nano /etc/exports  
-/raid5/nfs 192.168.1.0/28(rw,sync,insecure,nohide,all_squash,no_subtree_check)
-/raid5/nfs 192.168.0.0/26(rw,sync,insecure,nohide,all_squash,no_subtree_check)
-(пустой файл это ок, там только то что надо написать вручную)
-
-exportfs -rav  
-systemctl restart nfs-server
-
-  Добавляем в /etc/fstab:    
-  nano /etc/fstab  
-  hq-srv:/raid5/nfs /mnt/nfs nfs defaults 0 0
-```
-![image](https://github.com/user-attachments/assets/06dfd6b7-5556-43f1-9410-b4e4e40cd073)
-```
-mkdir -p /mnt/nfs  
-mount -a 
-```
 
 
 
 
 
-SAMBA
-на BR-SRV
-пароль в самбе P@ssw0rd
-setenforce 0
-(nano /etc/selinux/config  # замените режим с enforcing на permissive)
-```
-выставляем 192.168.0.2 в качестве нащего днс сервера на линке в nmtui и домен поиска au-team.irpo  
-```
-```
- dnf install samba* krb5* -y  
- Проверьте доступные серверы имен, просмотрев файл resolv.conf:  
- cat /etc/resolv.conf  
- В выводе должно отобразиться наш dns сервер и домен для поиска.
-```
-```
-Создание резервных копий файлов  
- Переименуйте файл /etc/smb.conf, он будет создан позднее в процессе выполнения команды samba-tool.  
- cp /etc/samba/smb.conf /etc/samba/smb.conf.back  
- Создайте резервную копию используемого по умолчанию конфигурационного файла kerberos:  
- cp /etc/krb5.conf /etc/krb5.conf.back
-```
-```
- Файла /etc/samba/smb.conf быть не должно, он сам создаст.  
- rm -rf /etc/samba/smb.conf  
- samba-tool domain provision --use-rfc2307 --interactive
