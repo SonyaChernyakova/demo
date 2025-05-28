@@ -302,7 +302,8 @@ nano /etc/named.conf
 ```
 На HQ-CLI и HQ-RTR установить DNS-сервер: 192.168.0.61
 ```
-/var/named/master/au-team   
+/var/named/master/au-team
+```
 ```
 $TTL    604800  ;
 @       IN      SOA     hq-srv.au-team.irpo     root.au-team.irpo       (
