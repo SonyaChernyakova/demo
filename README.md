@@ -1,6 +1,5 @@
 # demo
-![image](https://github.com/user-attachments/assets/5ccb31a6-f690-4789-8037-62b7049578a1)
-![image](https://github.com/user-attachments/assets/78b44241-aac2-4fd0-8613-39edf773cb04)
+
 
 На ISP настройте динамическую сетевую трансляцию в сторону HQ-RTR и BR-RTR  
 для доступа к сети Интернет:  
