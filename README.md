@@ -46,14 +46,13 @@ hostnamectl set-hostname {hq-srv, hq-cli, br-srv}.au-team.irpo; exec bash
 
 
 
-
 РОУТЕРЫ 
 
-HQ-RTR - ip route 0.0.0.0/0 172.16.4.14 
+HQ-RTR - ip route 0.0.0.0/0 172.16.40.14 
 en  
 conf t      
 int ISP       
-ip add 172.16.4.1/28       
+ip add 172.16.40.1/28       
 port te0       
 service-instance toISP       
 encapsulation untagged       
@@ -61,11 +60,11 @@ connect ip interface ISP
 wr  mem       
 
 
-BR-RTR - ip route 0.0.0.0/0 172.16.5.14 
+BR-RTR - ip route 0.0.0.0/0 172.16.50.14 
 en  
 conf t  
 int ISP  
-ip add 172.16.5.1/28  
+ip add 172.16.50.1/28  
 port te0  
 service-instance toISP  
 encapsulation untagged  
@@ -74,18 +73,17 @@ wr mem
 
 ```
 Int SRV     
-ip add 192.168.1.1/27   
+ip add 192.168.2.1/28   
 port te1  
 service-instance toSRV  
-encapsulation untagged   
-int SRV   
+encapsulation untagged    
 connect ip interface SRV   
 wr  mem 
 ```
 
 Настройка производится на EcoRouter HQ-RTR: 
 ```
-ip nat pool nat1 192.168.0.1-192.168.0.254
+ip nat pool nat1 192.168.0.1-192.168.0.100 (254)
 ip nat pool nat2 192.168.1.65-192.168.1.79 
 ip nat source dynamic inside-to-outside pool nat1 overload interface ISP 
 ip nat source dynamic inside-to-outside pool nat2 overload interface ISP 
@@ -104,7 +102,7 @@ ip nat inside
 
 Настройка производится на EcoRouter BR-RTR: 
 ```
-ip nat pool nat3 192.168.1.2-192.168.1.31  
+ip nat pool nat3 192.168.2.2-192.168.2.31  
 ip nat source dynamic inside-to-outside pool nat3 overload interface ISP 
 
 en
@@ -137,7 +135,7 @@ connect port te1 service-instance toSW
 end wr mem
 
 int te1.100  
-ip add 192.168.0.62/26  
+ip add 192.168.0.62/27  
 port te1  
 service-instance te1.100  
 encapsulation dot1q 100  
@@ -145,7 +143,7 @@ rewrite pop 1
 connect ip interface te1.100  
 
 int te1.200  
-ip add 192.168.1.78/28  
+ip add 192.168.1.78/27  
 port te1  
 service-instance te1.200  
 encapsulation dot1q 200  
@@ -182,7 +180,7 @@ ifconfig ovs0-vlan200 up
 
 Настройка производится на BR-SRV: 192.168.1.2/27 - 192.168.1.1
 
-useradd -m -u 1010 sshuser  
+useradd -m -u 1015 sshuser  
 echo "sshuser:P@ssw0rd" | sudo chpasswd  
 usermod -aG wheel sshuser  
 nano /etc/sudoers  
@@ -289,14 +287,12 @@ dhcp-server 1
 hq-srv:
 timedatectl set-timezone Europe/Moscow  
 
-hq-rtr: ntp server 172.16.4.1 
+hq-rtr: ntp server 172.16.40.1 
 ntp timezone UTC+3 
 ```
 ```
 dnf install bind -y
 systemctl enable --now named
-((chattr -f +i /etc/resolv.conf
-mv /etc/named/named.conf /etc/named/named.conf.backup)) хз что это и работает ли
 nano /etc/named.conf
 ```
 ![image](https://github.com/user-attachments/assets/62e3b167-9ba2-47e2-87d1-ae693eb4d068)
